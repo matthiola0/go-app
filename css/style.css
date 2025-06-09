@@ -73,12 +73,17 @@ body {
 
 /* Size-specific Hoshi styles */
 .hoshi-9 {
-  width: 6px;
+  width: 6px; /* Approx 44px per cell on 400px board */
   height: 6px;
 }
 
-.hoshi-21 {
-  width: 8px; /* Slightly larger for the bigger board */
+.hoshi-13 {
+  width: 7px; /* Approx 40px per cell on 520px board */
+  height: 7px;
+}
+
+.hoshi-19 {
+  width: 8px; /* Approx 30px per cell on 570px board */
   height: 8px;
 }
 

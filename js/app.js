@@ -13,12 +13,9 @@ const PLAYER_MAP = { 'black': 1, 'white': 2, 'empty': 0 };
 const COLOR_MAP = { 1: 'black', 2: 'white', 0: 'empty' };
 
 const HOSHI_POINTS = {
-  9: [{ r: 2, c: 2 }, { r: 2, c: 6 }, { r: 4, c: 4 }, { r: 6, c: 2 }, { r: 6, c: 6 }],
-  21: [
-    { r: 3, c: 3 }, { r: 3, c: 10 }, { r: 3, c: 17 },
-    { r: 10, c: 3 }, { r: 10, c: 10 }, { r: 10, c: 17 },
-    { r: 17, c: 3 }, { r: 17, c: 10 }, { r: 17, c: 17 }
-  ]
+  9:  [[2,2], [2,6], [4,4], [6,2], [6,6]],
+  13: [[3,3], [3,9], [6,6], [9,3], [9,9]],
+  19: [[3,3], [3,9], [3,15], [9,3], [9,9], [9,15], [15,3], [15,9], [15,15]]
 };
 
 // --- Helper Functions ---
@@ -106,11 +103,14 @@ function drawBoard(size) {
   goBoard.className = 'go-board';
 
   // Dynamically set board size
-  if (size === 21) {
-    goBoard.style.width = '630px'; // 21 * 30px per intersection
-    goBoard.style.height = '630px';
-  } else { // Default for 9x9 or other sizes
-    goBoard.style.width = '400px';
+  if (size === 19) {
+    goBoard.style.width = '570px'; // 19 * 30px
+    goBoard.style.height = '570px';
+  } else if (size === 13) {
+    goBoard.style.width = '520px'; // 13 * 40px
+    goBoard.style.height = '520px';
+  } else { // Default for 9x9
+    goBoard.style.width = '400px'; // 9 * ~44px
     goBoard.style.height = '400px';
   }
 
@@ -405,10 +405,11 @@ function handleNewGame() {
 
 document.addEventListener('DOMContentLoaded', () => {
   const select9x9Button = document.getElementById('select-9x9');
-  const select21x21Button = document.getElementById('select-21x21');
+  const select13x13Button = document.getElementById('select-13x13'); // New
+  const select19x19Button = document.getElementById('select-19x19'); // New
   const passButton = document.getElementById('pass-turn');
   const startGameButton = document.getElementById('start-game');
-  const newGameButton = document.getElementById('new-game'); // Get the new button
+  const newGameButton = document.getElementById('new-game');
   const gameModeSelect = document.getElementById('game-mode');
 
   if (gameModeSelect) {
@@ -418,23 +419,25 @@ document.addEventListener('DOMContentLoaded', () => {
         p2NameInput.value = "AI Opponent";
         p2NameInput.disabled = true;
       } else {
-        p2NameInput.value = player2Name === "AI Opponent" ? "Player 2" : player2Name; // Restore if it was AI
+        p2NameInput.value = player2Name === "AI Opponent" ? "Player 2" : player2Name;
         p2NameInput.disabled = false;
       }
     });
   }
 
   if (startGameButton) startGameButton.addEventListener('click', handleStartGame);
-  if (newGameButton) newGameButton.addEventListener('click', handleNewGame); // Add listener
+  if (newGameButton) newGameButton.addEventListener('click', handleNewGame);
 
-  if (select9x9Button) select9x9Button.addEventListener('click', () => {
-    currentBoardSize = 9;
-    if (document.getElementById('game-area').style.display === 'block') drawBoard(9);
-  });
-  if (select21x21Button) select21x21Button.addEventListener('click', () => {
-    currentBoardSize = 21;
-    if (document.getElementById('game-area').style.display === 'block') drawBoard(21);
-  });
+  const boardSizeButtonHandler = (size) => {
+    currentBoardSize = size;
+    if (document.getElementById('game-area').style.display === 'block') {
+      drawBoard(size);
+    }
+  };
+
+  if (select9x9Button) select9x9Button.addEventListener('click', () => boardSizeButtonHandler(9));
+  if (select13x13Button) select13x13Button.addEventListener('click', () => boardSizeButtonHandler(13));
+  if (select19x19Button) select19x19Button.addEventListener('click', () => boardSizeButtonHandler(19));
 
   if (passButton) passButton.addEventListener('click', handlePassTurn);
 });
