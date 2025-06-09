@@ -104,6 +104,16 @@ function drawBoard(size) {
 
   const goBoard = document.createElement('div');
   goBoard.className = 'go-board';
+
+  // Dynamically set board size
+  if (size === 21) {
+    goBoard.style.width = '630px'; // 21 * 30px per intersection
+    goBoard.style.height = '630px';
+  } else { // Default for 9x9 or other sizes
+    goBoard.style.width = '400px';
+    goBoard.style.height = '400px';
+  }
+
   goBoard.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
   goBoard.style.gridTemplateRows = `repeat(${size}, 1fr)`;
 
@@ -118,7 +128,8 @@ function drawBoard(size) {
 
       if (hoshiForCurrentSize.some(p => p.r === row && p.c === col)) {
         const hoshiDot = document.createElement('div');
-        hoshiDot.className = 'hoshi';
+        // Add base hoshi class and size-specific class
+        hoshiDot.className = `hoshi hoshi-${size}`;
         hoshiDot.style.top = '50%'; hoshiDot.style.left = '50%';
         intersection.appendChild(hoshiDot);
       }
