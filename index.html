@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Go Game</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <h1>Go Game</h1>
+
+  <div id="player-setup">
+    <h2>Player Setup</h2>
+    <div>
+      <label for="game-mode">Game Mode:</label>
+      <select id="game-mode">
+        <option value="hvh" selected>Human vs. Human</option>
+        <option value="hva">Human vs. AI</option>
+      </select>
+    </div>
+    <div>
+      <label for="player1-name">Player 1 (Black):</label>
+      <input type="text" id="player1-name" value="Player 1">
+    </div>
+    <div id="player2-name-container">
+      <label for="player2-name">Player 2 (White):</label>
+      <input type="text" id="player2-name" value="Player 2">
+    </div>
+    <button id="start-game">Start Game</button>
+  </div>
+
+  <div id="game-area" style="display: none;">
+    <div id="game-controls">
+      <button id="new-game">New Game</button>
+      <button id="select-9x9">9x9 Board</button>
+      <button id="select-21x21">21x21 Board</button>
+      <button id="pass-turn">Pass Turn</button>
+    </div>
+    <div id="player-turn-indicator">Black's Turn</div>
+    <div id="board-container"></div>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
