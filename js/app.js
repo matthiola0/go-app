@@ -9,6 +9,9 @@ let player1Name = "Player 1";
 let player2Name = "Player 2";
 let gameMode = 'hvh';
 
+// Modal DOM Elements - assigned in DOMContentLoaded
+let gameOverModal, modalMessage, modalNewGameButton;
+
 const PLAYER_MAP = { 'black': 1, 'white': 2, 'empty': 0 };
 const COLOR_MAP = { 1: 'black', 2: 'white', 0: 'empty' };
 
@@ -292,8 +295,18 @@ function handleAITurn() {
 
 // --- Event Handlers ---
 function handleIntersectionClick(event) {
-  if (gameOver || (gameMode === 'hva' && currentPlayer === 'white')) {
-     alert(gameOver ? "Game is over." : "It's AI's turn.");
+  if (gameOver) {
+    // console.log("Game is over. Board clicks disabled via gameOver flag.");
+    // Optionally, briefly show the modal if it's somehow hidden but game is over
+    if (gameOverModal && gameOverModal.style.display !== 'flex') {
+        if(modalMessage) modalMessage.textContent = "遊戲已經結束。 (Game is already over.)";
+        gameOverModal.style.display = 'flex';
+    }
+    return;
+  }
+  if (gameMode === 'hva' && currentPlayer === 'white') {
+     // console.log("It's AI's turn. Board clicks disabled.");
+     // alert("It's AI's turn."); // Alert can be annoying, console log might be enough
      return;
   }
 
@@ -344,37 +357,49 @@ function handleIntersectionClick(event) {
 }
 
 function handlePassTurn() {
-  if (gameOver) { alert("Game is over."); return; }
-
-  const humanPlayerName = currentPlayer === 'black' ? player1Name : player2Name; // Name of player *intending* to pass
-
-  if (gameMode === 'hva' && currentPlayer === 'white') { // AI is passing
-    console.log("AI Passes.");
-    if (lastMoveWasPass) {
-        gameOver = true;
-        alert(`Game Over: Both players passed consecutively. ${player1Name} (Black) vs ${player2Name} (AI).`);
-    } else {
-        lastMoveWasPass = true;
+  if (gameOver) {
+    // console.log("Game is over. Pass Turn button disabled via gameOver flag.");
+    if (gameOverModal && gameOverModal.style.display !== 'flex') { // Ensure modal is visible if game is over
+        if (modalMessage) modalMessage.textContent = "遊戲已經結束。 (Game is already over.)";
+        gameOverModal.style.display = 'flex';
     }
-    currentPlayer = 'black';
-    previousBoardState = null; // Ko state reset after a pass
-    updatePlayerTurnIndicator();
-    // No need to trigger AI again here, human's turn
     return;
   }
 
-  // Human player's pass
-  if (lastMoveWasPass) {
+  const passingPlayerName = currentPlayer === 'black' ? player1Name : player2Name;
+
+  // AI Passing Logic (if AI calls this function)
+  if (gameMode === 'hva' && currentPlayer === 'white') {
+    console.log("AI Passes.");
+    if (lastMoveWasPass) { // Human passed, then AI passes
+        gameOver = true;
+        if (modalMessage) modalMessage.textContent = `${player1Name} (執黑) 與 ${player2Name} (AI執白) 雙方連續 PASS，遊戲結束。\n請自行判斷結果。`;
+        if (gameOverModal) gameOverModal.style.display = 'flex';
+    } else { // Human made a move, AI now passes
+        lastMoveWasPass = true; // AI's pass is the first of a potential pair
+    }
+    currentPlayer = 'black'; // Turn goes to human (Black)
+    previousBoardState = null;
+    updatePlayerTurnIndicator(); // Update to show human's turn or "Game Over"
+    return;
+  }
+
+  // Human Player Passing Logic
+  if (lastMoveWasPass) { // Opponent (Human or AI) passed, now this Human player passes
     gameOver = true;
-    alert(`Game Over: Both players passed consecutively. ${player1Name} vs ${player2Name}.`);
-  } else {
+    console.log(`Game Over: ${passingPlayerName} passed after opponent passed.`);
+    let opponentName = currentPlayer === 'black' ? player2Name : player1Name; // The one who passed first
+    if (modalMessage) modalMessage.textContent = `${passingPlayerName} 與 ${opponentName} 雙方連續 PASS，遊戲結束。\n請自行判斷結果。`;
+    if (gameOverModal) gameOverModal.style.display = 'flex';
+  } else { // This Human player is the first to pass
     lastMoveWasPass = true;
-    console.log(`${humanPlayerName} passed.`);
-    currentPlayer = (currentPlayer === 'black') ? 'white' : 'black';
+    console.log(`${passingPlayerName} passed.`);
+    currentPlayer = (currentPlayer === 'black') ? 'white' : 'black'; // Switch turn
     previousBoardState = null;
   }
-  updatePlayerTurnIndicator();
+  updatePlayerTurnIndicator(); // Update to show next player's turn or "Game Over"
 
+  // If it's now AI's turn (after Human passed)
   if (gameMode === 'hva' && currentPlayer === 'white' && !gameOver) {
       document.getElementById('board-container').style.pointerEvents = 'none';
       setTimeout(() => {
@@ -431,13 +456,25 @@ function handleNewGame() {
 
 
 document.addEventListener('DOMContentLoaded', () => {
+  // Assign modal elements from DOM
+  gameOverModal = document.getElementById('game-over-modal');
+  modalMessage = document.getElementById('modal-message');
+  modalNewGameButton = document.getElementById('modal-new-game');
+
   const select9x9Button = document.getElementById('select-9x9');
-  const select13x13Button = document.getElementById('select-13x13'); // New
-  const select19x19Button = document.getElementById('select-19x19'); // New
+  const select13x13Button = document.getElementById('select-13x13');
+  const select19x19Button = document.getElementById('select-19x19');
   const passButton = document.getElementById('pass-turn');
   const startGameButton = document.getElementById('start-game');
   const newGameButton = document.getElementById('new-game');
   const gameModeSelect = document.getElementById('game-mode');
+
+  if (modalNewGameButton) {
+    modalNewGameButton.addEventListener('click', () => {
+      if (gameOverModal) gameOverModal.style.display = 'none'; // Hide modal
+      handleNewGame(); // Call existing new game function
+    });
+  }
 
   if (gameModeSelect) {
     gameModeSelect.addEventListener('change', (e) => {

@@ -155,3 +155,63 @@ body {
   background-color: #fdfdfd;
   border: 1px solid #bbb;
 }
+
+/* Game Over Modal Styles */
+.modal {
+    /* display: none; is set by inline style in HTML initially */
+    /* JS will set display: flex; to show and enable flex centering */
+    position: fixed; /* Stay in place */
+    z-index: 1000; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0,0,0,0.6); /* Black w/ opacity */
+    justify-content: center; /* Center content horizontally (for flex) */
+    align-items: center; /* Center content vertically (for flex) */
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: auto; /* Fallback for non-flex centering */
+    padding: 25px 35px;
+    border: 1px solid #888;
+    border-radius: 8px;
+    width: 80%;
+    max-width: 400px;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+    text-align: center;
+    font-family: sans-serif; /* Ensure consistent font */
+}
+
+#modal-title {
+    font-size: 1.8em;
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+#modal-message {
+    font-size: 1.1em;
+    margin-bottom: 20px;
+    color: #555;
+}
+
+#modal-new-game {
+    background-color: #4CAF50; /* Green */
+    border: none;
+    color: white;
+    padding: 12px 25px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 1em;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#modal-new-game:hover {
+    background-color: #45a049;
+}
