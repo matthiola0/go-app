@@ -92,6 +92,9 @@ function redrawStonesFromState() {
 
 
 function drawBoard(size) {
+  console.log("drawBoard called with size:", size);
+  console.log("HOSHI_POINTS for this size:", HOSHI_POINTS[size]);
+
   const boardContainer = document.getElementById('board-container');
   if (!boardContainer) { console.error("Board container not found!"); return; }
 
@@ -119,25 +122,49 @@ function drawBoard(size) {
 
   const hoshiForCurrentSize = HOSHI_POINTS[size] || [];
 
+  // Create all intersection divs first
   for (let row = 0; row < size; row++) {
     for (let col = 0; col < size; col++) {
       const intersection = document.createElement('div');
       intersection.className = 'intersection';
       intersection.dataset.row = row;
       intersection.dataset.col = col;
-
-      if (hoshiForCurrentSize.some(p => p.r === row && p.c === col)) {
-        const hoshiDot = document.createElement('div');
-        // Add base hoshi class and size-specific class
-        hoshiDot.className = `hoshi hoshi-${size}`;
-        hoshiDot.style.top = '50%'; hoshiDot.style.left = '50%';
-        intersection.appendChild(hoshiDot);
-      }
+      // Temporary log for verifying data attributes on a few cells (from previous logging task)
+      // if (row < 1 && col < 2) {
+      //     console.log(`[DEBUG] Intersection created: data-row=${intersection.dataset.row}, data-col=${intersection.dataset.col}`);
+      // }
       intersection.addEventListener('click', handleIntersectionClick);
       goBoard.appendChild(intersection);
     }
   }
-  boardContainer.appendChild(goBoard);
+  boardContainer.appendChild(goBoard); // Append the board with all intersections
+
+  // Now, add Hoshi points using the new detailed logging logic
+  console.log(`[HOSHI LOGIC - ${size}x${size}] Accessing HOSHI_POINTS[${size}]:`, JSON.parse(JSON.stringify(hoshiForCurrentSize)));
+
+  hoshiForCurrentSize.forEach(coord => {
+    const r = coord[0];
+    const c = coord[1];
+    console.log(`[HOSHI LOGIC - ${size}x${size}] Processing hoshi coord: r=${r}, c=${c}`);
+
+    const selector = `.intersection[data-row='${r}'][data-col='${c}']`;
+    console.log(`[HOSHI LOGIC - ${size}x${size}] Querying for parent intersection with selector: "${selector}"`);
+
+    const intersectionDiv = goBoard.querySelector(selector); // Query within the goBoard context
+    console.log(`[HOSHI LOGIC - ${size}x${size}] Found intersectionDiv for (r=${r},c=${c}):`, intersectionDiv);
+
+    if (intersectionDiv) {
+      const hoshiDiv = document.createElement('div');
+      hoshiDiv.className = `hoshi hoshi-${size}`;
+      hoshiDiv.style.top = '50%';
+      hoshiDiv.style.left = '50%';
+      intersectionDiv.appendChild(hoshiDiv);
+      console.log(`[HOSHI LOGIC - ${size}x${size}] Appended hoshiDiv to intersectionDiv. Hoshi classes: ${hoshiDiv.classList.toString()}. Parent intersection data: r=${intersectionDiv.dataset.row}, c=${intersectionDiv.dataset.col}`);
+    } else {
+      console.error(`[HOSHI LOGIC - ${size}x${size}] FAILED to find intersectionDiv for hoshi at r=${r}, c=${c} using selector: "${selector}"`);
+    }
+  });
+
   redrawStonesFromState(); // Initial draw of stones (none, but good practice)
   updatePlayerTurnIndicator(); // Call after everything is set up
   console.log(`Go board (${size}x${size}) drawn. Player: ${currentPlayer}. Mode: ${gameMode}.`);

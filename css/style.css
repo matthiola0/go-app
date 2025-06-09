@@ -64,11 +64,18 @@ body {
 
 /* Base Hoshi styles */
 .hoshi {
+  display: block; /* Ensure it's a block-level element */
+  visibility: visible; /* Ensure it's visible */
+  opacity: 1; /* Ensure it's not transparent */
   position: absolute;
-  background-color: #000;
+  background-color: #000000; /* Explicit black */
   border-radius: 50%;
-  z-index: 2; /* Above lines */
-  transform: translate(-50%, -50%); /* Centering the hoshi dot */
+  z-index: 2; /* Above lines, below stones */
+  /* Centering is done by top: 50%; left: 50%; in JS and this transform */
+  transform: translate(-50%, -50%);
+  /* Ensure no base width/height that could conflict */
+  width: auto;
+  height: auto;
 }
 
 /* Size-specific Hoshi styles */
