@@ -1,0 +1,25 @@
+{
+  "name": "go-app",
+  "version": "1.0.0",
+  "description": "歡迎來到這款網頁版圍棋遊戲！這是一款您可以在瀏覽器中直接進行的經典策略棋盤遊戲。",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/matthiola0/go-app.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/matthiola0/go-app/issues"
+  },
+  "homepage": "https://github.com/matthiola0/go-app#readme",
+  "dependencies": {
+    "express": "^5.1.0",
+    "socket.io": "^4.8.1",
+    "uuid": "^11.1.0"
+  }
+}
